@@ -1,0 +1,29 @@
+@startuml
+==POSTing a message - "Happy Path" ==
+box
+alt Get Oauth Token
+
+ AMPS->AzureAD: HTTP Post-OAuth credentials
+ AzureAD->AMPS: Token received
+end
+
+alt
+ AMPS -> SB_HTTP_Adapter : HTTP Post with OAuth token
+ SB_HTTP_Adapter->Gateway
+ Gateway->Gateway:Validate token
+ Gateway->BIS
+ BIS->BIS: Message persisted
+ BIS->Gateway
+ Gateway->SB_HTTP_Adapter
+ SB_HTTP_Adapter --> AMPS : 200 OK
+end
+==POSTing a message - "4XX errors" ==
+
+AMPS -> Seeburger : Push Request
+Seeburger --> AMPS : 404 Not Found
+AMPS -> AMPS: Retry (x3)
+
+AMPS -> Seeburger : Push Request
+Seeburger --> AMPS : 404 Not Found
+AMPS -> AMPS: Retry (x3)
+@enduml
