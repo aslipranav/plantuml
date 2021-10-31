@@ -13,4 +13,4 @@ jobs:
         with:
           args: '-tutxt diagrams/*.txt'
       - name: Display diagrams
-        run: cat diagrams/*.utxt
+        run: cat plantuml/*.txt
